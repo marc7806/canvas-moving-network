@@ -17,13 +17,18 @@
     </style>
 </head>
 <body>
-<canvas id="myCanvas" width="480" height="320"></canvas>
+<canvas id="myCanvas" width="800" height="250"></canvas>
 
 <script type="text/javascript">
-    const NUM_POINTS = 20;
+    const NUM_POINTS = 40;
     const POINT_RADIUS_OPTIONS = {
         max: 5,
         min: 3
+    };
+    const COLOR = {
+        r: 156,
+        g: 156,
+        b: 156
     };
 
     let canvas = document.getElementById("myCanvas");
@@ -51,7 +56,7 @@
         this.draw = function () {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-            ctx.fillStyle = "#0095DD";
+            ctx.fillStyle = "rgba(" + COLOR.r + ", " + COLOR.g + ", " + COLOR.b + ", 1)";
             ctx.fill();
             ctx.closePath();
         };
@@ -76,23 +81,35 @@
         }
     }
 
-    initializePoints();
+    function drawRelationLine(i, numberRelations) {
+        if (i >= numberRelations) {
+
+            for (let y = 1; y <= numberRelations; y++) {
+                ctx.beginPath();
+                ctx.moveTo(points[i].x, points[i].y);
+                ctx.lineTo(points[i-y].x, points[i-y].y);
+                ctx.strokeStyle = "rgba(" + COLOR.r + ", " + COLOR.g + ", " + COLOR.b + ", .2)";
+                ctx.stroke();
+            }
+        }
+    }
 
     function createCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (let p of points) {
-            console.log(p);
-            p.update();
-            p.draw();
+        for (let i = 0; i < points.length; i++) {
+            points[i].update();
+            points[i].draw();
+
+            this.drawRelationLine(i, 2);
         }
 
         requestAnimationFrame(createCanvas);
     }
 
-    // setInterval(createCanvas, 200)
-
+    initializePoints();
     createCanvas();
+
 </script>
 
 
