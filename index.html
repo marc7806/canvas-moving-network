@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Paddle ball</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            background: #eee;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<script type="text/javascript">
+    const NUM_POINTS = 20;
+    const POINT_RADIUS_OPTIONS = {
+        max: 5,
+        min: 3
+    };
+
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+    let points = [];
+
+    // Class definitions
+    function Point(ctx) {
+        // Random initialize x, y, and radius
+        this.radius = Math.random() * (POINT_RADIUS_OPTIONS.max - POINT_RADIUS_OPTIONS.min) + POINT_RADIUS_OPTIONS.min;
+        this.x = Math.random() * ((canvas.width - this.radius) - this.radius) + this.radius;
+        this.y = Math.random() * ((canvas.height - this.radius) - this.radius) + this.radius;
+        this.vel = {
+            x: Math.random() * 4,
+            y: Math.random() * -2
+        };
+
+        this.isXCollision = function () {
+            return this.x + this.vel.x > canvas.width - this.radius || this.x + this.vel.x < this.radius;
+        };
+        this.isYCollision = function () {
+            return this.y + this.vel.y > canvas.height - this.radius || this.y + this.vel.y < this.radius;
+        };
+
+        this.draw = function () {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        };
+
+        this.update = function () {
+            if (this.isXCollision()) {
+                this.vel.x = -this.vel.x;
+            }
+            if (this.isYCollision()) {
+                this.vel.y = -this.vel.y;
+            }
+
+            this.x += this.vel.x;
+            this.y += this.vel.y;
+        }
+    }
+
+    function initializePoints() {
+        for (let i = 0; i < NUM_POINTS; i++) {
+            let o = new Point(ctx);
+            points.push(o);
+        }
+    }
+
+    initializePoints();
+
+    function createCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let p of points) {
+            console.log(p);
+            p.update();
+            p.draw();
+        }
+
+        requestAnimationFrame(createCanvas);
+    }
+
+    // setInterval(createCanvas, 200)
+
+    createCanvas();
+</script>
+
+
+</body>
+</html>
