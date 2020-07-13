@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>Canvas Moving Network</title>
     <style>
         * {
@@ -16,102 +17,20 @@
         }
     </style>
 </head>
+
 <body>
-<canvas id="myCanvas" width="800" height="250"></canvas>
+    <label for="numNodes">Number of nodes: </label>
+    <input id="numNodes" value="40" type="number" placeholder="number of nodes">
+    <br>
+    <label for="minRad">Min. point radius: </label>
+    <input id="minRad" value="3" type="number" placeholder="min point radius">
+    <br>
+    <label for="maxRad">Max. point radius: </label>
+    <input id="maxRad" value="5" type="number" placeholder="max point radius">
+    
+    <canvas id="myCanvas" width="800" height="250"></canvas>
 
-<script type="text/javascript">
-    const NUM_POINTS = 40;
-    const POINT_RADIUS_OPTIONS = {
-        max: 5,
-        min: 3
-    };
-    const COLOR = {
-        r: 156,
-        g: 156,
-        b: 156
-    };
-
-    let canvas = document.getElementById("myCanvas");
-    let ctx = canvas.getContext("2d");
-    let points = [];
-
-    // Class definitions
-    function Point(ctx) {
-        // Random initialize x, y, and radius
-        this.radius = Math.random() * (POINT_RADIUS_OPTIONS.max - POINT_RADIUS_OPTIONS.min) + POINT_RADIUS_OPTIONS.min;
-        this.x = Math.random() * ((canvas.width - this.radius) - this.radius) + this.radius;
-        this.y = Math.random() * ((canvas.height - this.radius) - this.radius) + this.radius;
-        this.vel = {
-            x: Math.random() * 4,
-            y: Math.random() * -2
-        };
-
-        this.isXCollision = function () {
-            return this.x + this.vel.x > canvas.width - this.radius || this.x + this.vel.x < this.radius;
-        };
-        this.isYCollision = function () {
-            return this.y + this.vel.y > canvas.height - this.radius || this.y + this.vel.y < this.radius;
-        };
-
-        this.draw = function () {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-            ctx.fillStyle = "rgba(" + COLOR.r + ", " + COLOR.g + ", " + COLOR.b + ", 1)";
-            ctx.fill();
-            ctx.closePath();
-        };
-
-        this.update = function () {
-            if (this.isXCollision()) {
-                this.vel.x = -this.vel.x;
-            }
-            if (this.isYCollision()) {
-                this.vel.y = -this.vel.y;
-            }
-
-            this.x += this.vel.x;
-            this.y += this.vel.y;
-        }
-    }
-
-    function initializePoints() {
-        for (let i = 0; i < NUM_POINTS; i++) {
-            let o = new Point(ctx);
-            points.push(o);
-        }
-    }
-
-    function drawRelationLine(i, numberRelations) {
-        if (i >= numberRelations) {
-
-            for (let y = 1; y <= numberRelations; y++) {
-                ctx.beginPath();
-                ctx.moveTo(points[i].x, points[i].y);
-                ctx.lineTo(points[i-y].x, points[i-y].y);
-                ctx.strokeStyle = "rgba(" + COLOR.r + ", " + COLOR.g + ", " + COLOR.b + ", .2)";
-                ctx.stroke();
-            }
-        }
-    }
-
-    function createCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        for (let i = 0; i < points.length; i++) {
-            points[i].update();
-            points[i].draw();
-
-            this.drawRelationLine(i, 2);
-        }
-
-        requestAnimationFrame(createCanvas);
-    }
-
-    initializePoints();
-    createCanvas();
-
-</script>
-
-
+    <script type="text/javascript" src="moving-nodes.js"></script>
 </body>
+
 </html>
